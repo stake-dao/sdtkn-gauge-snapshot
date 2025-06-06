@@ -1,7 +1,7 @@
 const https = require('https');
 const fs = require('fs');
 
-
+const STAKE_DAO_DELEGATION = "0x52ea58f4fc3ced48fa18e909226c1f8a0ef887dc".toLowerCase();
 const TRANSFER_TOPIC = '0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef';
 const STEP = 500;
 
@@ -140,8 +140,21 @@ async function snapshot() {
     }
   }
 
-  console.log(`✅ Found ${entries.length} holders`);
-  fs.writeFileSync('addresses.json', Object.keys(entries), { encoding: 'utf-8' });
+  // Remove delegation
+  const _balances = {};
+  for (const addr of Object.keys(balances)) {
+    if (addr.toLowerCase() === STAKE_DAO_DELEGATION) {
+      continue;
+    }
+
+    _balances[addr] = balances[addr];
+  }
+
+  balances = _balances;
+
+  const addresses = Object.keys(balances)
+  console.log(`✅ Found ${addresses.length} holders`);
+  fs.writeFileSync('addresses.json', JSON.stringify(addresses), { encoding: 'utf-8' });
 
   const holders = Object.entries(balances)
     .filter(([_, bal]) => bal > 0n)
