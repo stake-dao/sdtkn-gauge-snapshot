@@ -1,7 +1,7 @@
 const https = require('https');
 const fs = require('fs');
 
-const TOKEN_ADDRESS = '0x7f50786A0b15723D741727882ee99a0BF34e3466'.toLowerCase();
+
 const TRANSFER_TOPIC = '0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef';
 const STEP = 500;
 
@@ -10,6 +10,7 @@ let RPC_URL = undefined;
 let START_BLOCK = undefined;
 let END_BLOCK = undefined;
 let proposalId = undefined;
+let TOKEN_ADDRESS = undefined;
 
 let rpcId = 1;
 let requestCounter = 0;
@@ -238,7 +239,7 @@ async function sendQuery(query) {
 }
 
 async function main() {
-  [proposalId, RPC_URL, start, end] = process.argv.slice(2);
+  [proposalId, RPC_URL, start, end, TOKEN_ADDRESS] = process.argv.slice(2);
   START_BLOCK = parseInt(start, 10);
   END_BLOCK = parseInt(end, 10);
 
@@ -247,6 +248,7 @@ async function main() {
   if (!RPC_URL) missing.push("rpc url");
   if (!START_BLOCK) missing.push("start block");
   if (!END_BLOCK) missing.push("end block");
+  if (!TOKEN_ADDRESS) missing.push("token address");
 
   if (missing.length) {
     console.error(`❌ Missing required argument(s): ${missing.join(", ")}`);
